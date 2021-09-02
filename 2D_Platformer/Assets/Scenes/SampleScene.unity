@@ -302,7 +302,7 @@ GameObject:
   - component: {fileID: 508347578}
   m_Layer: 6
   m_Name: FloorGrid
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3851,9 +3851,9 @@ GameObject:
   m_Component:
   - component: {fileID: 542196241}
   - component: {fileID: 542196240}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Grid
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4273,7 +4273,7 @@ GameObject:
   - component: {fileID: 1416055195}
   - component: {fileID: 1416055196}
   - component: {fileID: 1416055197}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: EnemyGoblin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4288,7 +4288,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1416055193}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.39, y: 0, z: 0}
+  m_LocalPosition: {x: -0.1, y: -3.32, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1362891192}
@@ -4356,7 +4356,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 2
-  _visionRange: 1.5
+  _visionRange: 1
   _isRight: 0
   raycastShooter: {fileID: 1130311470}
 --- !u!1 &1432652638
@@ -5020,6 +5020,10 @@ PrefabInstance:
     - target: {fileID: 98751272708009765, guid: 6e36815557c716744beb0d9709213b8f, type: 3}
       propertyPath: m_Name
       value: SlimeEnemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 98751272708009765, guid: 6e36815557c716744beb0d9709213b8f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6e36815557c716744beb0d9709213b8f, type: 3}

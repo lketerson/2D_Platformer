@@ -10,12 +10,15 @@ public class GoblinController : MonoBehaviour
     float _speed;
     [SerializeField]
     float _visionRange;
+    float _lookDir;
     bool _inFront;
     [SerializeField]
     bool _isRight;
     Vector2 _direction;
+    //bool aux;
 
-    
+
+
     public Transform raycastShooter;
 
 
@@ -24,84 +27,94 @@ public class GoblinController : MonoBehaviour
     public bool InFront { get => _inFront; set => _inFront = value; }
     public bool IsRight { get => _isRight; set => _isRight = value; }
     public Vector2 Direction { get => _direction; set => _direction = value; }
+    public float LookDir { get => _lookDir; set => _lookDir = value; }
 
     // Start is called before the first frame update
     void Start()
     {
         _isRight = true;
         _goblinRb = GetComponent<Rigidbody2D>();
+        //FindCollision();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        Debug.DrawRay(raycastShooter.position, Direction * 0.2f, Color.red);
+
     }
 
     void FixedUpdate()
     {
-        FindPlayer();
-        Mover(Speed);
-        ChooseDirection();
-        
+        LookingDirection();
+        FindCollision();
     }
 
-    void ChooseDirection()
+    void LookingDirection()
     {
-        if (FindPlayer())
+        if (IsRight)
         {
-            Speed = 2f;
-            if (IsRight) //Se estiver indo pra direita, vira pra esquerda
-            {
-                transform.eulerAngles = new Vector2(0, 0);
-                Direction = Vector2.right;
-                Mover(Speed);
-
-            }
-            else
-            {
-                transform.eulerAngles = new Vector2(0, 180);
-                Direction = Vector2.left;
-                Mover(Speed * -1);
-            }
+            transform.eulerAngles = new Vector2(0, 0);
+            Direction = Vector2.right;
+            LookDir = 1;
+            
         }
         else
         {
-            Speed = 0f;
+            transform.eulerAngles = new Vector2(0, 180);
+            Direction = Vector2.left;
+            LookDir = -1f;
         }
-
+        Run(Speed * LookDir);
     }
 
-    void Mover(float speed)
-    {
-        _goblinRb.velocity = new Vector2(speed, _goblinRb.velocity.y);
-    }
-    bool FindPlayer()
+  
+
+    bool FindCollision()
     {
         bool aux = false;
-        //O raycast requer origen, direção e tamanho do raio.
-        RaycastHit2D hitRaycast = Physics2D.Raycast(raycastShooter.position, Direction, VisionRange);
         
+        RaycastHit2D lfPlayer = Physics2D.Raycast(raycastShooter.position, Direction, VisionRange);
+        RaycastHit2D lfWalls = Physics2D.Raycast(raycastShooter.position, Direction, 0.2f);
+        RaycastHit2D lfFloor = Physics2D.Raycast(raycastShooter.position, Vector2.down, 0.5f);
 
-        //Se o raio está encontrando algo com colisor
-        if (hitRaycast.collider)
+
+        if (lfPlayer.collider)
         {
-            if (hitRaycast.transform.CompareTag("Player")) 
+            if (lfPlayer.collider.CompareTag("Player")) //Looking for the player
             {
                 aux = true;
-                Debug.Log($"O raio encontrou o {hitRaycast.collider.name}");
+                Speed = 2.5f; //Increase the speed is the player is visible
             }
             else
             {
                 aux = false;
+                Speed = 2f;
             }
-            
         }
-        return aux;
+        //Looking for walls but not changing speed unless the player is visible
+        if (lfWalls.collider && lfWalls.collider.CompareTag("Ground"))
+        {
+            LookingDirection();
+            IsRight = !IsRight;
+        }  
+        //Looking for the edge of floaing platforms
+        if (!lfFloor.collider)
+        {
+            LookingDirection();
+            IsRight = !IsRight;
+        }
+        
+        return aux;        
     }
 
+    void Run(float speed)
+    {
+        _goblinRb.velocity = new Vector2(speed, _goblinRb.velocity.y);
+    }
     private void OnDrawGizmos()
     {
-        Gizmos.DrawRay(raycastShooter.position, Direction*VisionRange);
+        Gizmos.DrawRay(raycastShooter.position, Direction * VisionRange);
+        Gizmos.DrawRay(raycastShooter.position, Vector2.down * 0.5f);
     }
 }
