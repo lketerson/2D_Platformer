@@ -4356,8 +4356,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 2
-  _visionRange: 1
-  _isRight: 0
+  _visionRange: 5
+  _stopDistance: 0.5
   raycastShooter: {fileID: 1130311470}
 --- !u!1 &1432652638
 GameObject:

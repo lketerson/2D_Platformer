@@ -11,12 +11,13 @@ public class GoblinController : MonoBehaviour
     [SerializeField]
     float _visionRange;
     float _lookDir;
-    bool _inFront;
     [SerializeField]
+    float _stopDistance;
+    bool _inFront;
     bool _isRight;
     Vector2 _direction;
     //bool aux;
-
+    GameObject player;
 
 
     public Transform raycastShooter;
@@ -28,12 +29,14 @@ public class GoblinController : MonoBehaviour
     public bool IsRight { get => _isRight; set => _isRight = value; }
     public Vector2 Direction { get => _direction; set => _direction = value; }
     public float LookDir { get => _lookDir; set => _lookDir = value; }
+    public float StopDistance { get => _stopDistance; set => _stopDistance = value; }
 
     // Start is called before the first frame update
     void Start()
     {
         _isRight = true;
         _goblinRb = GetComponent<Rigidbody2D>();
+        player = GameObject.FindGameObjectWithTag("Player");
         //FindCollision();
     }
 
@@ -85,12 +88,26 @@ public class GoblinController : MonoBehaviour
             {
                 aux = true;
                 Speed = 2.5f; //Increase the speed is the player is visible
+                if (DistanceCheck(lfPlayer))
+                {
+                    _goblinRb.velocity =  Vector2.zero;
+                    Atack();
+                }
+                else
+                {
+                    //_goblinRb.velocity = Vector2
+                }
             }
             else
             {
                 aux = false;
                 Speed = 2f;
             }
+        }
+
+        void Atack()
+        {
+            player.GetComponent<PlayerCombat>().OnHit();
         }
         //Looking for walls but not changing speed unless the player is visible
         if (lfWalls.collider && lfWalls.collider.CompareTag("Ground"))
@@ -106,6 +123,22 @@ public class GoblinController : MonoBehaviour
         }
         
         return aux;        
+    }
+
+    bool DistanceCheck(RaycastHit2D playerRaycast)
+    {
+        var check = false;
+        float distance = Vector2.Distance(transform.position, playerRaycast.transform.position);
+        if(distance <= StopDistance)
+        {
+            check = true;
+            
+        }
+        else
+        {
+            check = false;
+        }
+        return check;
     }
 
     void Run(float speed)

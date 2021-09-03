@@ -10,6 +10,10 @@ public class PlayerCombat : MonoBehaviour
     private bool isAtacking;
     private bool isHitted;
     private int life;
+    [SerializeField]
+    private float time;
+    [SerializeField]
+    private float _recoverTime;
     private PlayerMovement playerMovement;
     public AlertObserver animAlert;
 
@@ -20,6 +24,7 @@ public class PlayerCombat : MonoBehaviour
     public bool IsAtacking { get => isAtacking; set => isAtacking = value; }
     public bool IsHitted { get => isHitted; set => isHitted = value; }
     public int Life { get => life; set => life = value; }
+    public float RecoverTime { get => _recoverTime; set => _recoverTime = value; }
 
     /*_______________________________________*/
 
@@ -34,6 +39,7 @@ public class PlayerCombat : MonoBehaviour
     void Update()
     {
         Atack();
+        time += Time.deltaTime;
     }
 
     void Atack()
@@ -64,13 +70,19 @@ public class PlayerCombat : MonoBehaviour
 
     public void OnHit()
     {
-        isHitted = true;
-        playerMovement.playerSprite.GetComponent<Animator>().SetTrigger("playerHit");
-        LifeController();
+        if (PlayerRecover())
+        {
+            time = 0f;
+            isHitted = true;
+            playerMovement.playerSprite.GetComponent<Animator>().SetTrigger("playerHit");
+            LifeController();
+        }
+        
     }
 
     void LifeController()
     {
+        
         Life--;
         Debug.Log($"A vida do player: {Life}");
         if (Life <= 0)
@@ -81,6 +93,20 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
+    bool PlayerRecover()
+    {
+        var aux = false;
+        if(time <= RecoverTime)
+        {
+            aux =false;
+        }
+        else
+        {
+            aux = true;
+        }
+       return aux;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.layer == 7)
@@ -88,6 +114,7 @@ public class PlayerCombat : MonoBehaviour
             OnHit();
         }
     }
+
 
 
     private void OnDrawGizmos()
