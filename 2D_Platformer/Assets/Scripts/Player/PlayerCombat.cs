@@ -93,7 +93,7 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
-    bool PlayerRecover()
+    public bool PlayerRecover()
     {
         var aux = false;
         if(time <= RecoverTime)
